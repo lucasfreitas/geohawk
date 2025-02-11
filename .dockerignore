@@ -1,0 +1,57 @@
+# Dependências
+node_modules
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Arquivos de desenvolvimento
+.git
+.gitignore
+.env
+.env.*
+*.md
+test/
+coverage/
+.vscode/
+.idea/
+*.test.ts
+*.spec.ts
+jest.config.js
+
+# Bases de dados GeoIP (serão montadas como volume)
+geoip-bases/
+
+# Arquivos de build
+dist/
+build/
+*.tsbuildinfo
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de configuração de desenvolvimento
+nodemon.json
+.prettierrc
+.eslintrc
+.editorconfig
+
+# Arquivos de teste e debug
+test-*.js
+test-*.ts
+*.log
+logs/
+
+# Arquivos de documentação
+docs/
+*.pdf
+*.doc
+*.docx
+
+# Outros
+*.swp
+*.swo
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
