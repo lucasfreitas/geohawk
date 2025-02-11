@@ -24,23 +24,6 @@ Serviço de geolocalização de IPs usando bases de dados MaxMind GeoIP2.
 
 ## Instalação
 
-### Usando o Script de Setup (Recomendado)
-
-```bash
-# Dar permissão de execução ao script
-chmod +x setup.sh
-
-# Executar o script
-./setup.sh
-```
-
-O script irá:
-1. Criar os diretórios necessários
-2. Instalar as dependências
-3. Verificar a presença das bases de dados
-4. Gerar as chaves de segurança
-5. Construir a imagem Docker
-
 ### Instalação Manual
 
 1. Clone o repositório e entre no diretório:
