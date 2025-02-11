@@ -1,7 +1,8 @@
 {
-  "name": "geoip-service",
+  "name": "geohawk",
   "version": "1.0.0",
-  "description": "Serviço de geolocalização de IPs usando bases MaxMind GeoIP2",
+  "description": "High-precision IP Geolocation Service using MaxMind GeoIP2 databases",
+  "author": "Lucas Freitas <lucas@lucasfreitas.eti.br>",
   "main": "src/main.js",
   "scripts": {
     "build": "nest build",

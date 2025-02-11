@@ -1,95 +1,120 @@
-# GeoIP Service
+```
+   ______           __  __                __  
+  / ____/__  ____  / / / /___ __      __/ /__
+ / / __/ _ \/ __ \/ /_/ / __ `/ | /| / / //_/
+/ /_/ /  __/ /_/ / __  / /_/ /| |/ |/ / ,<   
+\____/\___/\____/_/ /_/\__,_/ |__/|__/_/|_|  
+```
+# GeoHawk
 
-Serviço de geolocalização de IPs usando bases de dados MaxMind GeoIP2.
+A high-precision IP geolocation service that soars above the rest. Built with NestJS and powered by MaxMind GeoIP2 databases, GeoHawk provides detailed location information for both IPv4 and IPv6 addresses with hawk-eye accuracy.
 
-## Funcionalidades
+## Author
 
-- Consulta de informações de geolocalização para IPv4 e IPv6
-- Detecção automática do tipo de IP
-- Informações detalhadas de cidade, estado, país
-- Dados de ASN e organização
-- Autenticação via API Key
-- Documentação Swagger
-- Suporte a Docker
-- Proteção de endpoints
+Lucas Freitas <lucas@lucasfreitas.eti.br>
 
-## Pré-requisitos
+## Features
 
-- Node.js 18+
-- Docker e Docker Compose (opcional, para execução containerizada)
-- Bases de dados MaxMind GeoIP2:
+- 🌍 Comprehensive geolocation data for IPv4 and IPv6 addresses
+- 🏙️ Detailed information including city, state, country, and coordinates
+- 🔍 Automatic IP type detection
+- 🌐 ASN (Autonomous System Number) and organization details
+- 🔒 Secure API key authentication
+- 📚 Complete Swagger/OpenAPI documentation
+- 🐳 Docker support with optimized configuration
+- ⚡ High-performance database access
+- 🛡️ Built-in security features
+
+## Prerequisites
+
+- Node.js 18 or higher
+- Docker and Docker Compose (optional, for containerized deployment)
+- MaxMind GeoIP2 databases:
   - GeoLite2-City.mmdb
   - GeoLite2-Country.mmdb
   - GeoLite2-ASN.mmdb
 
-## Instalação
+> **Note**: You can obtain the MaxMind GeoIP2 databases either by:
+> - Creating an account at [MaxMind's website](https://www.maxmind.com/en/geolite2/signup)
+> - Downloading directly from [P3TERX/GeoLite.mmdb](https://github.com/P3TERX/GeoLite.mmdb) repository (easier method)
 
-### Instalação Manual
+## Installation
 
-1. Clone o repositório e entre no diretório:
-```bash
-git clone <repositório>
-cd novo
-```
+### Using Docker (Recommended)
 
-2. Instale as dependências:
-```bash
-npm install
-```
+1. Clone the repository:
+\`\`\`bash
+git clone https://github.com/lucasfreitas/geohawk.git
+cd geohawk
+\`\`\`
 
-3. Configure as variáveis de ambiente:
-```bash
+2. Copy the example environment file and configure your settings:
+\`\`\`bash
 cp .env.example .env
-# Edite o arquivo .env com suas configurações
-```
+\`\`\`
 
-## Execução
+3. Place your MaxMind database files in the \`geoip-bases\` directory:
+\`\`\`bash
+mkdir -p geoip-bases
+# Copy your .mmdb files to geoip-bases/
+\`\`\`
 
-### Usando Docker (Recomendado)
-
-```bash
-# Construir e iniciar os containers
+4. Build and start the containers:
+\`\`\`bash
 docker-compose up -d
+\`\`\`
 
-# Verificar logs
-docker-compose logs -f
-```
+### Manual Installation
 
-### Execução Local
+1. Clone the repository and install dependencies:
+\`\`\`bash
+git clone https://github.com/lucasfreitas/geohawk.git
+cd geohawk
+npm install
+\`\`\`
 
-```bash
-# Desenvolvimento
+2. Configure environment variables:
+\`\`\`bash
+cp .env.example .env
+# Edit .env with your settings
+\`\`\`
+
+3. Place MaxMind databases in the \`geoip-bases\` directory
+
+4. Start the service:
+\`\`\`bash
+# Development mode
 npm run start:dev
 
-# Produção
+# Production mode
 npm run build
 npm run start:prod
-```
+\`\`\`
 
-## Uso da API
+## API Documentation
 
-### Autenticação
+### Authentication
 
-A API usa autenticação via API Key que deve ser enviada no header `x-api-key` em todas as requisições:
+All API endpoints require authentication using an API key. Include your key in the \`x-api-key\` header:
 
-```bash
-curl http://localhost:3000/geoip/lookup?ip=8.8.8.8 \
-  -H "x-api-key: sua_api_key_aqui"
-```
+\`\`\`bash
+curl -H "x-api-key: your_api_key" http://localhost:3000/geoip/lookup?ip=8.8.8.8
+\`\`\`
 
 ### Endpoints
 
 #### GET /geoip/lookup
-Consulta informações de um IP.
+
+Lookup geolocation information for an IP address.
+
+**Parameters:**
+- \`ip\` (query, required): IPv4 or IPv6 address to lookup
 
 **Headers:**
-- `x-api-key`: Sua chave de API (obrigatório)
+- \`x-api-key\` (required): Your API key for authentication
 
-**Parâmetros:**
-- `ip`: Endereço IP para consulta (IPv4 ou IPv6)
-
-**Exemplo de resposta:**
-```json
+**Success Response (200 OK):**
+\`\`\`json
 {
   "ip": "8.8.8.8",
   "type": "ipv4",
@@ -108,66 +133,91 @@ Consulta informações de um IP.
   },
   "network": "8.8.8.0/24"
 }
-```
+\`\`\`
 
-## Documentação da API
+**Error Responses:**
+- \`401 Unauthorized\`: Invalid or missing API key
+- \`400 Bad Request\`: Invalid IP address format
 
-A documentação completa da API está disponível em:
+### Interactive Documentation
+
+Access the interactive API documentation at:
 - Swagger UI: http://localhost:3000/api
 - OpenAPI JSON: http://localhost:3000/api-json
 
-## Configuração
+## Configuration
 
-### Variáveis de Ambiente
+### Environment Variables
 
-| Variável | Descrição | Padrão |
-|----------|-----------|---------|
-| PORT | Porta do servidor | 3000 |
-| API_KEY | Chave de API para autenticação | - |
-| NODE_ENV | Ambiente de execução | production |
-| GEOIP_CITY_DB | Caminho para base City | geoip-bases/GeoLite2-City.mmdb |
-| GEOIP_COUNTRY_DB | Caminho para base Country | geoip-bases/GeoLite2-Country.mmdb |
-| GEOIP_ASN_DB | Caminho para base ASN | geoip-bases/GeoLite2-ASN.mmdb |
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| PORT | Server port | 3000 | No |
+| API_KEY | Authentication key | - | Yes |
+| NODE_ENV | Environment (development/production) | production | No |
+| GEOIP_CITY_DB | Path to City database | geoip-bases/GeoLite2-City.mmdb | No |
+| GEOIP_COUNTRY_DB | Path to Country database | geoip-bases/GeoLite2-Country.mmdb | No |
+| GEOIP_ASN_DB | Path to ASN database | geoip-bases/GeoLite2-ASN.mmdb | No |
 
-## Segurança
+## Security Features
 
-- Todos os endpoints são protegidos por API Key
-- As bases de dados são montadas como read-only no container
-- O container roda com usuário não-root
-- CORS configurado para maior segurança
-- Rate limiting implementado para prevenir abusos
+- 🔐 API key authentication for all endpoints
+- 📁 Read-only database mounting in Docker
+- 👤 Non-root user container execution
+- 🛡️ Configured CORS protection
+- 🚦 Rate limiting for abuse prevention
+- 🔒 Security headers implementation
 
-## Monitoramento
+## Monitoring & Maintenance
 
-- Healthcheck configurado no Docker
-- Logs estruturados
-- Métricas básicas de uso
+- 🏥 Docker healthcheck configuration
+- 📝 Structured logging
+- 📊 Basic usage metrics
+- 🔄 Automatic database updates support
 
 ## Troubleshooting
 
-### Problemas Comuns
+### Common Issues
 
-1. **Erro ao carregar bases de dados GeoIP:**
-   - Verifique se os arquivos .mmdb estão no diretório correto
-   - Confirme as permissões dos arquivos
-   - Verifique se os arquivos não estão corrompidos
+1. **Database Loading Errors**
+   - Verify .mmdb files are in the correct location
+   - Check file permissions
+   - Ensure database files are not corrupted
 
-2. **Erro de autenticação:**
-   - Verifique se está enviando a API Key corretamente no header x-api-key
-   - Confirme se a API_KEY está configurada no .env
+2. **Authentication Errors**
+   - Confirm API_KEY is set in .env
+   - Verify x-api-key header is being sent correctly
+   - Check for whitespace in API key
 
-3. **Container não inicia:**
-   - Verifique os logs: `docker-compose logs`
-   - Confirme se as portas não estão em uso
-   - Verifique se as bases de dados estão montadas corretamente
+3. **Container Issues**
+   - Check logs: \`docker-compose logs\`
+   - Verify port availability
+   - Confirm database volume mounting
 
-## Suporte
+## Contributing
 
-Para suporte ou dúvidas:
-1. Abra uma issue no repositório
-2. Inclua logs relevantes e passos para reproduzir o problema
-3. Descreva o comportamento esperado vs atual
+1. Fork the repository
+2. Create your feature branch: \`git checkout -b feature/amazing-feature\`
+3. Commit your changes: \`git commit -m 'Add amazing feature'\`
+4. Push to the branch: \`git push origin feature/amazing-feature\`
+5. Open a Pull Request
 
-## Licença
+## Support
 
-Este projeto está licenciado sob a MIT License.
+If you encounter any issues or have questions:
+1. Check the [Issues](https://github.com/lucasfreitas/geohawk/issues) page
+2. Review existing documentation
+3. Open a new issue with:
+   - Detailed description of the problem
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Relevant logs and environment details
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [MaxMind](https://www.maxmind.com/) for providing GeoIP2 databases
+- [NestJS](https://nestjs.com/) framework
+- All contributors who have helped improve this service
