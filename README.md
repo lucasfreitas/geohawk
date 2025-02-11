@@ -43,63 +43,63 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
 ### Using Docker (Recommended)
 
 1. Clone the repository:
-\`\`\`bash
+```bash
 git clone https://github.com/lucasfreitas/geohawk.git
 cd geohawk
-\`\`\`
+```
 
 2. Copy the example environment file and configure your settings:
-\`\`\`bash
+```bash
 cp .env.example .env
-\`\`\`
+```
 
-3. Place your MaxMind database files in the \`geoip-bases\` directory:
-\`\`\`bash
+3. Place your MaxMind database files in the `geoip-bases` directory:
+```bash
 mkdir -p geoip-bases
 # Copy your .mmdb files to geoip-bases/
-\`\`\`
+```
 
 4. Build and start the containers:
-\`\`\`bash
+```bash
 docker-compose up -d
-\`\`\`
+```
 
 ### Manual Installation
 
 1. Clone the repository and install dependencies:
-\`\`\`bash
+```bash
 git clone https://github.com/lucasfreitas/geohawk.git
 cd geohawk
 npm install
-\`\`\`
+```
 
 2. Configure environment variables:
-\`\`\`bash
+```bash
 cp .env.example .env
 # Edit .env with your settings
-\`\`\`
+```
 
-3. Place MaxMind databases in the \`geoip-bases\` directory
+3. Place MaxMind databases in the `geoip-bases` directory
 
 4. Start the service:
-\`\`\`bash
+```bash
 # Development mode
 npm run start:dev
 
 # Production mode
 npm run build
 npm run start:prod
-\`\`\`
+```
 
 ## API Documentation
 
 ### Authentication
 
-All API endpoints require authentication using an API key. Include your key in the \`x-api-key\` header:
+All API endpoints require authentication using an API key. Include your key in the `x-api-key` header:
 
-\`\`\`bash
+```bash
 curl -H "x-api-key: your_api_key" http://localhost:3000/geoip/lookup?ip=8.8.8.8
-\`\`\`
+```
 
 ### Endpoints
 
@@ -108,13 +108,13 @@ curl -H "x-api-key: your_api_key" http://localhost:3000/geoip/lookup?ip=8.8.8.8
 Lookup geolocation information for an IP address.
 
 **Parameters:**
-- \`ip\` (query, required): IPv4 or IPv6 address to lookup
+- `ip` (query, required): IPv4 or IPv6 address to lookup
 
 **Headers:**
-- \`x-api-key\` (required): Your API key for authentication
+- `x-api-key` (required): Your API key for authentication
 
 **Success Response (200 OK):**
-\`\`\`json
+```json
 {
   "ip": "8.8.8.8",
   "type": "ipv4",
@@ -133,11 +133,11 @@ Lookup geolocation information for an IP address.
   },
   "network": "8.8.8.0/24"
 }
-\`\`\`
+```
 
 **Error Responses:**
-- \`401 Unauthorized\`: Invalid or missing API key
-- \`400 Bad Request\`: Invalid IP address format
+- `401 Unauthorized`: Invalid or missing API key
+- `400 Bad Request`: Invalid IP address format
 
 ### Interactive Documentation
 
@@ -189,16 +189,16 @@ Access the interactive API documentation at:
    - Check for whitespace in API key
 
 3. **Container Issues**
-   - Check logs: \`docker-compose logs\`
+   - Check logs: `docker-compose logs`
    - Verify port availability
    - Confirm database volume mounting
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch: \`git checkout -b feature/amazing-feature\`
-3. Commit your changes: \`git commit -m 'Add amazing feature'\`
-4. Push to the branch: \`git push origin feature/amazing-feature\`
+2. Create your feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
 
 ## Support
