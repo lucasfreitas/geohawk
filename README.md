@@ -20,6 +20,7 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
 - 💰 Country-specific currency information with native symbols
 - 🗣️ Official languages with native names
 - 🎌 Country flag emojis
+- 🌐 Country-specific TLDs (Top Level Domains)
 - 🔍 Automatic IP type detection
 - 🌐 ASN (Autonomous System Number) and organization details
 - 🔒 Secure API key authentication
@@ -163,7 +164,13 @@ Lookup geolocation information for an IP address.
     "America/Anchorage",
     "America/Honolulu"
   ],
-  "is_in_european_union": false
+  "is_in_european_union": false,
+  "tlds": [
+    ".us",
+    ".edu",
+    ".gov",
+    ".mil"
+  ]
 }
 ```
 
