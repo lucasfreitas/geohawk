@@ -53,7 +53,8 @@ export class CountryDataService {
         'America/Adak',
         'Pacific/Honolulu'
       ],
-      is_in_european_union: false
+      is_in_european_union: false,
+      tlds: ['.us', '.edu', '.gov', '.mil']
     },
     BR: {
       currencies: [{
@@ -90,7 +91,8 @@ export class CountryDataService {
         'America/Eirunepe',
         'America/Rio_Branco'
       ],
-      is_in_european_union: false
+      is_in_european_union: false,
+      tlds: ['.br', '.com.br', '.net.br', '.org.br', '.gov.br', '.edu.br']
     },
     AU: {
       currencies: [{
@@ -124,7 +126,8 @@ export class CountryDataService {
         'Australia/Perth',
         'Australia/Eucla'
       ],
-      is_in_european_union: false
+      is_in_european_union: false,
+      tlds: ['.au', '.com.au', '.net.au', '.org.au', '.edu.au', '.gov.au']
     },
     // Add more countries as needed
   };

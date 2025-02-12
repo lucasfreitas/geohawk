@@ -21,4 +21,5 @@ export interface CountryData {
   languages: Language[];
   timezones: string[];
   is_in_european_union: boolean;
+  tlds: string[];
 }

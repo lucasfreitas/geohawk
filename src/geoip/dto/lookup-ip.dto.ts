@@ -229,4 +229,15 @@ export class GeoIpResponseDto {
     example: false
   })
   is_in_european_union?: boolean;
+
+  @ApiProperty({
+    description: 'Top Level Domains (TLDs) associated with the country',
+    required: false,
+    type: 'array',
+    items: {
+      type: 'string'
+    },
+    example: ['.br', '.com.br', '.net.br', '.org.br', '.gov.br', '.edu.br']
+  })
+  tlds?: string[];
 }
