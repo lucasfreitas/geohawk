@@ -1,143 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { CountryData, Currency, Language } from '../interfaces/country-data.interface';
+import { CountryData } from '../interfaces/country-data.interface';
+import { allCountries } from '../data/regions';
 
+/**
+ * Service for retrieving country-specific data including:
+ * - Currencies with native names and symbols
+ * - Languages with native names
+ * - Timezones
+ * - Country flag emojis
+ * - TLDs (Top Level Domains)
+ * - European Union membership status
+ * 
+ * Currently supports 68 countries across:
+ * - North America (12 countries)
+ * - South America (12 countries)
+ * - Europe (15 countries)
+ * - Asia (12 countries)
+ * - Africa (10 countries)
+ * - Oceania (7 countries)
+ * 
+ * Data includes:
+ * - Major economies (G20 countries)
+ * - Regional economic leaders
+ * - Countries with significant internet infrastructure
+ * - Countries with diverse currency systems
+ */
 @Injectable()
 export class CountryDataService {
-  private readonly countryData: Record<string, CountryData> = {
-    // Example data for a few countries
-    US: {
-      currencies: [{
-        symbol: '$',
-        name: 'US Dollar',
-        name_native: 'US Dollar',
-        symbol_native: '$',
-        decimal_digits: 2,
-        rounding: 0,
-        code: 'USD',
-        name_plural: 'US dollars',
-        type: 'fiat'
-      }],
-      emoji: '🇺🇸',
-      languages: [{
-        name: 'English',
-        name_native: 'English'
-      }],
-      timezones: [
-        'America/New_York',
-        'America/Detroit',
-        'America/Kentucky/Louisville',
-        'America/Kentucky/Monticello',
-        'America/Indiana/Indianapolis',
-        'America/Indiana/Vincennes',
-        'America/Indiana/Winamac',
-        'America/Indiana/Marengo',
-        'America/Indiana/Petersburg',
-        'America/Indiana/Vevay',
-        'America/Chicago',
-        'America/Indiana/Tell_City',
-        'America/Indiana/Knox',
-        'America/Menominee',
-        'America/North_Dakota/Center',
-        'America/North_Dakota/New_Salem',
-        'America/North_Dakota/Beulah',
-        'America/Denver',
-        'America/Boise',
-        'America/Phoenix',
-        'America/Los_Angeles',
-        'America/Anchorage',
-        'America/Juneau',
-        'America/Sitka',
-        'America/Metlakatla',
-        'America/Yakutat',
-        'America/Nome',
-        'America/Adak',
-        'Pacific/Honolulu'
-      ],
-      is_in_european_union: false,
-      tlds: ['.us', '.edu', '.gov', '.mil']
-    },
-    BR: {
-      currencies: [{
-        symbol: 'R$',
-        name: 'Brazilian Real',
-        name_native: 'Real Brasileiro',
-        symbol_native: 'R$',
-        decimal_digits: 2,
-        rounding: 0,
-        code: 'BRL',
-        name_plural: 'Brazilian reais',
-        type: 'fiat'
-      }],
-      emoji: '🇧🇷',
-      languages: [{
-        name: 'Portuguese',
-        name_native: 'Português'
-      }],
-      timezones: [
-        'America/Noronha',
-        'America/Belem',
-        'America/Fortaleza',
-        'America/Recife',
-        'America/Araguaina',
-        'America/Maceio',
-        'America/Bahia',
-        'America/Sao_Paulo',
-        'America/Campo_Grande',
-        'America/Cuiaba',
-        'America/Santarem',
-        'America/Porto_Velho',
-        'America/Boa_Vista',
-        'America/Manaus',
-        'America/Eirunepe',
-        'America/Rio_Branco'
-      ],
-      is_in_european_union: false,
-      tlds: ['.br', '.com.br', '.net.br', '.org.br', '.gov.br', '.edu.br']
-    },
-    AU: {
-      currencies: [{
-        symbol: 'AU$',
-        name: 'Australian Dollar',
-        name_native: 'Australian Dollar',
-        symbol_native: '$',
-        decimal_digits: 2,
-        rounding: 0,
-        code: 'AUD',
-        name_plural: 'Australian dollars',
-        type: 'fiat'
-      }],
-      emoji: '🇦🇺',
-      languages: [{
-        name: 'English',
-        name_native: 'English'
-      }],
-      timezones: [
-        'Australia/Lord_Howe',
-        'Antarctica/Macquarie',
-        'Australia/Hobart',
-        'Australia/Currie',
-        'Australia/Melbourne',
-        'Australia/Sydney',
-        'Australia/Broken_Hill',
-        'Australia/Brisbane',
-        'Australia/Lindeman',
-        'Australia/Adelaide',
-        'Australia/Darwin',
-        'Australia/Perth',
-        'Australia/Eucla'
-      ],
-      is_in_european_union: false,
-      tlds: ['.au', '.com.au', '.net.au', '.org.au', '.edu.au', '.gov.au']
-    },
-    // Add more countries as needed
-  };
+  private readonly countryData: Record<string, CountryData>;
 
+  constructor() {
+    this.countryData = allCountries;
+  }
+
+  /**
+   * Get comprehensive data for a specific country
+   * @param countryCode ISO 3166-1 alpha-2 country code (e.g., 'US', 'GB', 'JP')
+   * @returns CountryData object containing currencies, languages, timezones, etc.
+   */
   getCountryData(countryCode: string): CountryData | null {
     if (!countryCode) return null;
     return this.countryData[countryCode.toUpperCase()] || null;
   }
 
-  // Helper method to get flag emoji from country code
+  /**
+   * Get flag emoji for a country
+   * @param countryCode ISO 3166-1 alpha-2 country code
+   * @returns Unicode flag emoji for the country
+   */
   getFlagEmoji(countryCode: string): string {
     if (!countryCode) return '';
     const codePoints = countryCode
@@ -145,5 +55,23 @@ export class CountryDataService {
       .split('')
       .map(char => 127397 + char.charCodeAt(0));
     return String.fromCodePoint(...codePoints);
+  }
+
+  /**
+   * Check if a country code is supported
+   * @param countryCode ISO 3166-1 alpha-2 country code
+   * @returns boolean indicating if country data is available
+   */
+  isCountrySupported(countryCode: string): boolean {
+    if (!countryCode) return false;
+    return countryCode.toUpperCase() in this.countryData;
+  }
+
+  /**
+   * Get list of all supported country codes
+   * @returns Array of supported ISO 3166-1 alpha-2 country codes
+   */
+  getSupportedCountries(): string[] {
+    return Object.keys(this.countryData);
   }
 }
