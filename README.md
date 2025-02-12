@@ -1,10 +1,3 @@
-```
-   ______           __  __                __  
-  / ____/__  ____  / / / /___ __      __/ /__
- / / __/ _ \/ __ \/ /_/ / __ `/ | /| / / //_/
-/ /_/ /  __/ /_/ / __  / /_/ /| |/ |/ / ,<   
-\____/\___/\____/_/ /_/\__,_/ |__/|__/_/|_|  
-```
 # GeoHawk
 
 A high-precision IP geolocation service that soars above the rest. Built with NestJS and powered by MaxMind GeoIP2 databases, GeoHawk provides detailed location information for both IPv4 and IPv6 addresses with hawk-eye accuracy.
@@ -21,14 +14,20 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
 - 🗣️ Official languages with native names
 - 🎌 Country flag emojis
 - 🌐 Country-specific TLDs (Top Level Domains)
-- 🛡️ Security information (VPN, Tor, datacenter detection)
+- 🛡️ Advanced security analysis:
+  - VPN and proxy detection
+  - Tor exit node identification
+  - Datacenter IP detection
+  - Search engine bot recognition
+  - Connection type classification (Residential/Datacenter/VPN)
+  - Risk scoring system (0-100)
+  - Detailed risk factors analysis
 - 🔍 Automatic IP type detection
 - 🌐 ASN (Autonomous System Number) and organization details
 - 🔒 Secure API key authentication
 - 📚 Complete Swagger/OpenAPI documentation
 - 🐳 Docker support with optimized configuration
 - ⚡ High-performance database access
-- 🛡️ Built-in security features
 
 ## Prerequisites
 
@@ -176,7 +175,16 @@ Lookup geolocation information for an IP address.
     "is_datacenter": true,
     "is_tor": false,
     "is_vpn": false,
-    "is_proxy": true
+    "is_proxy": false,
+    "is_search_engine": true,
+    "is_residential": false,
+    "risk_score": 20,
+    "risk_level": "low",
+    "connection_type": "Datacenter",
+    "risk_factors": [
+      "Datacenter IP",
+      "Search Engine Bot"
+    ]
   }
 }
 ```
@@ -184,6 +192,38 @@ Lookup geolocation information for an IP address.
 **Error Responses:**
 - `401 Unauthorized`: Invalid or missing API key
 - `400 Bad Request`: Invalid IP address format
+
+### Security Information
+
+The API provides detailed security analysis for each IP address:
+
+#### Risk Assessment
+- Risk score ranges from 0 to 100
+- Risk levels:
+  - Low: 0-29
+  - Medium: 30-69
+  - High: 70-100
+- Factors affecting the score:
+  - Tor exit node (+40)
+  - VPN service (+30)
+  - Datacenter IP (+20)
+  - Proxy detection (+25)
+  - Residential IP (-15)
+  - Search engine bot (-10)
+
+#### Connection Types
+- Residential: Regular ISP connections
+- Datacenter: Cloud providers and hosting services
+- VPN: Virtual Private Network services
+- Search Engine: Known search engine crawlers
+
+#### Risk Factors
+Detailed list of detected risk factors such as:
+- Tor Exit Node
+- VPN Service
+- Datacenter IP
+- Proxy Detection
+- Search Engine Bot
 
 ### Interactive Documentation
 
