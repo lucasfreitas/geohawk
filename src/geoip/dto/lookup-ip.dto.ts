@@ -205,4 +205,28 @@ export class GeoIpResponseDto {
     }
   })
   languages?: Language[];
+
+  @ApiProperty({
+    description: 'List of timezones in the country',
+    required: false,
+    type: 'array',
+    items: {
+      type: 'string'
+    },
+    example: [
+      'America/Sao_Paulo',
+      'America/Recife',
+      'America/Manaus',
+      'America/Belem'
+    ]
+  })
+  timezones?: string[];
+
+  @ApiProperty({
+    description: 'Whether the country is a member of the European Union',
+    required: false,
+    type: 'boolean',
+    example: false
+  })
+  is_in_european_union?: boolean;
 }

@@ -21,7 +21,39 @@ export class CountryDataService {
       languages: [{
         name: 'English',
         name_native: 'English'
-      }]
+      }],
+      timezones: [
+        'America/New_York',
+        'America/Detroit',
+        'America/Kentucky/Louisville',
+        'America/Kentucky/Monticello',
+        'America/Indiana/Indianapolis',
+        'America/Indiana/Vincennes',
+        'America/Indiana/Winamac',
+        'America/Indiana/Marengo',
+        'America/Indiana/Petersburg',
+        'America/Indiana/Vevay',
+        'America/Chicago',
+        'America/Indiana/Tell_City',
+        'America/Indiana/Knox',
+        'America/Menominee',
+        'America/North_Dakota/Center',
+        'America/North_Dakota/New_Salem',
+        'America/North_Dakota/Beulah',
+        'America/Denver',
+        'America/Boise',
+        'America/Phoenix',
+        'America/Los_Angeles',
+        'America/Anchorage',
+        'America/Juneau',
+        'America/Sitka',
+        'America/Metlakatla',
+        'America/Yakutat',
+        'America/Nome',
+        'America/Adak',
+        'Pacific/Honolulu'
+      ],
+      is_in_european_union: false
     },
     BR: {
       currencies: [{
@@ -39,7 +71,26 @@ export class CountryDataService {
       languages: [{
         name: 'Portuguese',
         name_native: 'Português'
-      }]
+      }],
+      timezones: [
+        'America/Noronha',
+        'America/Belem',
+        'America/Fortaleza',
+        'America/Recife',
+        'America/Araguaina',
+        'America/Maceio',
+        'America/Bahia',
+        'America/Sao_Paulo',
+        'America/Campo_Grande',
+        'America/Cuiaba',
+        'America/Santarem',
+        'America/Porto_Velho',
+        'America/Boa_Vista',
+        'America/Manaus',
+        'America/Eirunepe',
+        'America/Rio_Branco'
+      ],
+      is_in_european_union: false
     },
     AU: {
       currencies: [{
@@ -57,7 +108,23 @@ export class CountryDataService {
       languages: [{
         name: 'English',
         name_native: 'English'
-      }]
+      }],
+      timezones: [
+        'Australia/Lord_Howe',
+        'Antarctica/Macquarie',
+        'Australia/Hobart',
+        'Australia/Currie',
+        'Australia/Melbourne',
+        'Australia/Sydney',
+        'Australia/Broken_Hill',
+        'Australia/Brisbane',
+        'Australia/Lindeman',
+        'Australia/Adelaide',
+        'Australia/Darwin',
+        'Australia/Perth',
+        'Australia/Eucla'
+      ],
+      is_in_european_union: false
     },
     // Add more countries as needed
   };

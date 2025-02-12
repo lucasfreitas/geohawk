@@ -19,4 +19,6 @@ export interface CountryData {
   currencies: Currency[];
   emoji: string;
   languages: Language[];
+  timezones: string[];
+  is_in_european_union: boolean;
 }

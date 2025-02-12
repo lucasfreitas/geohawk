@@ -154,7 +154,16 @@ Lookup geolocation information for an IP address.
       "name": "English",
       "name_native": "English"
     }
-  ]
+  ],
+  "timezones": [
+    "America/New_York",
+    "America/Chicago",
+    "America/Denver",
+    "America/Los_Angeles",
+    "America/Anchorage",
+    "America/Honolulu"
+  ],
+  "is_in_european_union": false
 }
 ```
 

@@ -70,6 +70,8 @@ export class GeoipService implements OnModuleInit {
               response.currencies = countryData.currencies;
               response.emoji = countryData.emoji;
               response.languages = countryData.languages;
+              response.timezones = countryData.timezones;
+              response.is_in_european_union = countryData.is_in_european_union;
             }
           }
         }
@@ -91,6 +93,8 @@ export class GeoipService implements OnModuleInit {
                 response.currencies = extraData.currencies;
                 response.emoji = extraData.emoji;
                 response.languages = extraData.languages;
+                response.timezones = extraData.timezones;
+                response.is_in_european_union = extraData.is_in_european_union;
               }
             }
           }
