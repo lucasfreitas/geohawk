@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { IsValidIP } from '../validators/ip.validator';
+import { Currency, Language } from '../interfaces/country-data.interface';
 
 export class LookupIpDto {
   @ApiProperty({
@@ -118,4 +119,90 @@ export class GeoIpResponseDto {
     required: false
   })
   error?: string;
+
+  @ApiProperty({
+    description: 'Country currencies',
+    required: false,
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        symbol: {
+          type: 'string',
+          description: 'Currency symbol',
+          example: '$'
+        },
+          name: {
+            type: 'string',
+            description: 'Currency name in English',
+            example: 'US Dollar'
+          },
+          name_native: {
+            type: 'string',
+            description: 'Currency name in native language',
+            example: 'US Dollar'
+          },
+          symbol_native: {
+          type: 'string',
+          description: 'Native currency symbol',
+          example: '$'
+        },
+        decimal_digits: {
+          type: 'number',
+          description: 'Number of decimal digits',
+          example: 2
+        },
+        rounding: {
+          type: 'number',
+          description: 'Rounding precision',
+          example: 0
+        },
+        code: {
+          type: 'string',
+          description: 'Currency code',
+          example: 'USD'
+        },
+        name_plural: {
+          type: 'string',
+          description: 'Plural form of currency name',
+          example: 'US dollars'
+        },
+        type: {
+          type: 'string',
+          description: 'Currency type',
+          example: 'fiat'
+        }
+      }
+    }
+  })
+  currencies?: Currency[];
+
+  @ApiProperty({
+    description: 'Country flag emoji',
+    example: '🇺🇸',
+    required: false
+  })
+  emoji?: string;
+
+  @ApiProperty({
+    description: 'Country languages',
+    required: false,
+    type: 'array',
+    items: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          description: 'Language name in English',
+          example: 'English'
+        },
+        name_native: {
+          type: 'string',
+          description: 'Language name in its native form',
+          example: 'English'
+        }
+      }
+    }
+  })
+  languages?: Language[];
 }

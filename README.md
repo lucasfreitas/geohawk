@@ -17,6 +17,9 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
 
 - 🌍 Comprehensive geolocation data for IPv4 and IPv6 addresses
 - 🏙️ Detailed information including city, state, country, and coordinates
+- 💰 Country-specific currency information with native symbols
+- 🗣️ Official languages with native names
+- 🎌 Country flag emojis
 - 🔍 Automatic IP type detection
 - 🌐 ASN (Autonomous System Number) and organization details
 - 🔒 Secure API key authentication
@@ -131,7 +134,27 @@ Lookup geolocation information for an IP address.
     "number": 15169,
     "organization": "Google LLC"
   },
-  "network": "8.8.8.0/24"
+  "network": "8.8.8.0/24",
+  "currencies": [
+    {
+      "symbol": "$",
+      "name": "US Dollar",
+      "name_native": "US Dollar",
+      "symbol_native": "$",
+      "decimal_digits": 2,
+      "rounding": 0,
+      "code": "USD",
+      "name_plural": "US dollars",
+      "type": "fiat"
+    }
+  ],
+  "emoji": "🇺🇸",
+  "languages": [
+    {
+      "name": "English",
+      "name_native": "English"
+    }
+  ]
 }
 ```
 

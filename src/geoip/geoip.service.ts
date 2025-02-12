@@ -4,26 +4,8 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import * as net from 'net';
 import * as maxmind from '@maxmind/geoip2-node';
-
-export interface GeoIPResponse {
-  ip: string;
-  type: 'ipv4' | 'ipv6';
-  city?: string;
-  state?: string;
-  country?: string;
-  countryCode?: string;
-  location?: {
-    latitude?: number;
-    longitude?: number;
-    timeZone?: string;
-  };
-  asn?: {
-    number?: number;
-    organization?: string;
-  };
-  network?: string;
-  error?: string;
-}
+import { CountryDataService } from './services/country-data.service';
+import { GeoIpResponseDto } from './dto/lookup-ip.dto';
 
 @Injectable()
 export class GeoipService implements OnModuleInit {
@@ -31,7 +13,10 @@ export class GeoipService implements OnModuleInit {
   private countryReader: any;
   private asnReader: any;
 
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private configService: ConfigService,
+    private countryDataService: CountryDataService
+  ) {}
 
   async onModuleInit() {
     try {
@@ -52,19 +37,19 @@ export class GeoipService implements OnModuleInit {
     return net.isIPv4(ip) ? 'ipv4' : 'ipv6';
   }
 
-  async lookupIp(ip: string): Promise<GeoIPResponse> {
+  async lookupIp(ip: string): Promise<GeoIpResponseDto> {
     try {
       if (!net.isIP(ip)) {
         throw new Error('Invalid IP address');
       }
 
-      const response: GeoIPResponse = {
+      const response: GeoIpResponseDto = {
         ip,
         type: this.getIpType(ip)
       };
 
       try {
-        // Tentar obter dados da base City (mais detalhada)
+        // Try to get data from City database (more detailed)
         const cityData = await this.cityReader.city(ip);
         if (cityData) {
           response.city = cityData.city?.names?.en;
@@ -77,17 +62,37 @@ export class GeoipService implements OnModuleInit {
             timeZone: cityData.location?.timeZone
           };
           response.network = cityData.traits?.network;
+
+          // Add country-specific data if country code is available
+          if (cityData.country?.isoCode) {
+            const countryData = this.countryDataService.getCountryData(cityData.country.isoCode);
+            if (countryData) {
+              response.currencies = countryData.currencies;
+              response.emoji = countryData.emoji;
+              response.languages = countryData.languages;
+            }
+          }
         }
       } catch (error) {
         console.warn(`City lookup failed for IP ${ip}, trying country database...`);
         
-        // Se falhar, tentar obter pelo menos os dados do país
+        // If failed, try to get at least country data
         try {
           const countryData = await this.countryReader.country(ip);
           if (countryData) {
             response.country = countryData.country?.names?.en;
             response.countryCode = countryData.country?.isoCode;
             response.network = countryData.traits?.network;
+
+            // Add country-specific data if country code is available
+            if (countryData.country?.isoCode) {
+              const extraData = this.countryDataService.getCountryData(countryData.country.isoCode);
+              if (extraData) {
+                response.currencies = extraData.currencies;
+                response.emoji = extraData.emoji;
+                response.languages = extraData.languages;
+              }
+            }
           }
         } catch (error) {
           console.warn(`Country lookup failed for IP ${ip}:`, error);
@@ -95,7 +100,7 @@ export class GeoipService implements OnModuleInit {
       }
 
       try {
-        // Obter dados de ASN
+        // Get ASN data
         const asnData = await this.asnReader.asn(ip);
         if (asnData) {
           response.asn = {
