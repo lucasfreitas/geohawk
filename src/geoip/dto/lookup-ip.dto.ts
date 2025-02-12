@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { IsValidIP } from '../validators/ip.validator';
 import { Currency, Language } from '../interfaces/country-data.interface';
+import { SecurityCheck } from '../interfaces/security-check.interface';
 
 export class LookupIpDto {
   @ApiProperty({
@@ -240,4 +241,33 @@ export class GeoIpResponseDto {
     example: ['.br', '.com.br', '.net.br', '.org.br', '.gov.br', '.edu.br']
   })
   tlds?: string[];
+
+  @ApiProperty({
+    description: 'Security information about the IP address',
+    required: false,
+    type: 'object',
+    properties: {
+      is_datacenter: {
+        type: 'boolean',
+        description: 'Whether the IP belongs to a datacenter/cloud provider',
+        example: true
+      },
+      is_tor: {
+        type: 'boolean',
+        description: 'Whether the IP is a Tor exit node',
+        example: false
+      },
+      is_vpn: {
+        type: 'boolean',
+        description: 'Whether the IP belongs to a VPN provider',
+        example: false
+      },
+      is_proxy: {
+        type: 'boolean',
+        description: 'Whether the IP is being used as a proxy',
+        example: false
+      }
+    }
+  })
+  security?: SecurityCheck;
 }

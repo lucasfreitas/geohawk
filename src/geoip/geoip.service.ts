@@ -5,6 +5,7 @@ import { join } from 'path';
 import * as net from 'net';
 import * as maxmind from '@maxmind/geoip2-node';
 import { CountryDataService } from './services/country-data.service';
+import { SecurityCheckService } from './services/security-check.service';
 import { GeoIpResponseDto } from './dto/lookup-ip.dto';
 
 @Injectable()
@@ -15,7 +16,8 @@ export class GeoipService implements OnModuleInit {
 
   constructor(
     private configService: ConfigService,
-    private countryDataService: CountryDataService
+    private countryDataService: CountryDataService,
+    private securityCheckService: SecurityCheckService
   ) {}
 
   async onModuleInit() {
@@ -116,6 +118,9 @@ export class GeoipService implements OnModuleInit {
           if (!response.network) {
             response.network = asnData.network;
           }
+
+          // Add security information based on ASN and IP
+          response.security = this.securityCheckService.checkSecurity(ip, asnData.autonomousSystemNumber);
         }
       } catch (error) {
         console.warn(`ASN lookup failed for IP ${ip}:`, error);

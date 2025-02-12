@@ -21,6 +21,7 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
 - 🗣️ Official languages with native names
 - 🎌 Country flag emojis
 - 🌐 Country-specific TLDs (Top Level Domains)
+- 🛡️ Security information (VPN, Tor, datacenter detection)
 - 🔍 Automatic IP type detection
 - 🌐 ASN (Autonomous System Number) and organization details
 - 🔒 Secure API key authentication
@@ -170,7 +171,13 @@ Lookup geolocation information for an IP address.
     ".edu",
     ".gov",
     ".mil"
-  ]
+  ],
+  "security": {
+    "is_datacenter": true,
+    "is_tor": false,
+    "is_vpn": false,
+    "is_proxy": true
+  }
 }
 ```
 
