@@ -1,6 +1,6 @@
 # GeoHawk
 
-A high-precision IP geolocation service that soars above the rest. Built with NestJS and powered by MaxMind GeoIP2 databases, GeoHawk provides detailed location information for both IPv4 and IPv6 addresses with hawk-eye accuracy.
+A high-precision IP geolocation service that soars above the rest. Built with NestJS and powered by local GeoIP databases, GeoHawk provides detailed location information for both IPv4 and IPv6 addresses with hawk-eye accuracy.
 
 ## Author
 
@@ -21,6 +21,9 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
   - Search engine bot recognition
   - Connection type classification (Residential/Datacenter/VPN)
   - Risk scoring system (0-100)
+  - Real-time IP reputation checking
+  - Attack type detection
+  - Historical attack reporting
   - Detailed risk factors analysis
 - 🔍 Automatic IP type detection
 - 🌐 ASN (Autonomous System Number) and organization details
@@ -33,14 +36,16 @@ Lucas Freitas <lucas@lucasfreitas.eti.br>
 
 - Node.js 18 or higher
 - Docker and Docker Compose (optional, for containerized deployment)
-- MaxMind GeoIP2 databases:
-  - GeoLite2-City.mmdb
-  - GeoLite2-Country.mmdb
-  - GeoLite2-ASN.mmdb
-
-> **Note**: You can obtain the MaxMind GeoIP2 databases either by:
-> - Creating an account at [MaxMind's website](https://www.maxmind.com/en/geolite2/signup)
-> - Downloading directly from [P3TERX/GeoLite.mmdb](https://github.com/P3TERX/GeoLite.mmdb) repository (easier method)
+- GeoIP databases:
+  - MaxMind GeoIP2 databases (choose one option):
+    - Sign up for a free account at [MaxMind's website](https://www.maxmind.com/en/geolite2/signup)
+    - Download directly from [P3TERX/GeoLite.mmdb](https://github.com/P3TERX/GeoLite.mmdb) repository
+    Required files:
+    - GeoLite2-City.mmdb
+    - GeoLite2-Country.mmdb
+    - GeoLite2-ASN.mmdb
+  - IPInfo database:
+    - Download country_asn.mmdb from [IPInfo](https://ipinfo.io/) (free)
 
 ## Installation
 
@@ -57,7 +62,7 @@ cd geohawk
 cp .env.example .env
 ```
 
-3. Place your MaxMind database files in the `geoip-bases` directory:
+3. Place your database files in the `geoip-bases` directory:
 ```bash
 mkdir -p geoip-bases
 # Copy your .mmdb files to geoip-bases/
@@ -83,7 +88,7 @@ cp .env.example .env
 # Edit .env with your settings
 ```
 
-3. Place MaxMind databases in the `geoip-bases` directory
+3. Place databases in the `geoip-bases` directory
 
 4. Start the service:
 ```bash
@@ -102,17 +107,17 @@ npm run start:prod
 All API endpoints require authentication using an API key. Include your key in the `x-api-key` header:
 
 ```bash
-curl -H "x-api-key: your_api_key" http://localhost:3000/geoip/lookup?ip=8.8.8.8
+curl -H "x-api-key: your_api_key" http://localhost:3000/geoip/lookup/8.8.8.8
 ```
 
 ### Endpoints
 
-#### GET /geoip/lookup
+#### GET /geoip/lookup/:ip
 
 Lookup geolocation information for an IP address.
 
 **Parameters:**
-- `ip` (query, required): IPv4 or IPv6 address to lookup
+- `ip` (path, required): IPv4 or IPv6 address to lookup
 
 **Headers:**
 - `x-api-key` (required): Your API key for authentication
@@ -133,7 +138,10 @@ Lookup geolocation information for an IP address.
   },
   "asn": {
     "number": 15169,
-    "organization": "Google LLC"
+    "organization": "Google LLC",
+    "route": "8.8.8.0/24",
+    "domain": "google.com",
+    "type": "business"
   },
   "network": "8.8.8.0/24",
   "currencies": [
@@ -210,12 +218,27 @@ The API provides detailed security analysis for each IP address:
   - Proxy detection (+25)
   - Residential IP (-15)
   - Search engine bot (-10)
+  - Blacklisted IP (+10 per report, max 50)
 
 #### Connection Types
 - Residential: Regular ISP connections
 - Datacenter: Cloud providers and hosting services
 - VPN: Virtual Private Network services
 - Search Engine: Known search engine crawlers
+- CDN: Content Delivery Networks
+- Business: Corporate networks
+
+#### Attack Types Detection
+The service checks for various types of malicious activities:
+- SSH brute force attacks
+- Mail server attacks
+- Web server attacks
+- FTP attacks
+- IMAP/POP3 attacks
+- SQL injection attempts
+- IRC bot activity
+- Known malicious IPs
+- Brute force login attempts
 
 #### Risk Factors
 Detailed list of detected risk factors such as:
@@ -224,6 +247,8 @@ Detailed list of detected risk factors such as:
 - Datacenter IP
 - Proxy Detection
 - Search Engine Bot
+- Known Attack Source
+- Malicious Activity History
 
 ### Interactive Documentation
 
@@ -243,6 +268,10 @@ Access the interactive API documentation at:
 | GEOIP_CITY_DB | Path to City database | geoip-bases/GeoLite2-City.mmdb | No |
 | GEOIP_COUNTRY_DB | Path to Country database | geoip-bases/GeoLite2-Country.mmdb | No |
 | GEOIP_ASN_DB | Path to ASN database | geoip-bases/GeoLite2-ASN.mmdb | No |
+| GEOIP_IPINFO_DB | Path to IPInfo database | geoip-bases/country_asn.mmdb | No |
+| BLOCKLIST_CACHE_TTL | Cache duration in milliseconds | 3600000 | No |
+| API_TIMEOUT | Request timeout in milliseconds | 5000 | No |
+| API_RETRY_ATTEMPTS | Number of retry attempts | 3 | No |
 
 ## Security Features
 
@@ -252,6 +281,9 @@ Access the interactive API documentation at:
 - 🛡️ Configured CORS protection
 - 🚦 Rate limiting for abuse prevention
 - 🔒 Security headers implementation
+- 🕵️ Real-time IP reputation checking
+- 📊 Historical attack reporting
+- 🔍 Enhanced connection type detection
 
 ## Monitoring & Maintenance
 
@@ -259,6 +291,8 @@ Access the interactive API documentation at:
 - 📝 Structured logging
 - 📊 Basic usage metrics
 - 🔄 Automatic database updates support
+- 💾 Efficient cache management
+- 🔄 Automatic blocklist updates
 
 ## Troubleshooting
 
@@ -304,6 +338,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- [MaxMind](https://www.maxmind.com/) for providing GeoIP2 databases
 - [NestJS](https://nestjs.com/) framework
+- [Blocklist.de](https://www.blocklist.de/) for IP reputation data
 - All contributors who have helped improve this service

@@ -99,12 +99,30 @@ export class GeoIpResponseDto {
         type: 'string',
         description: 'Organization name',
         example: 'Google LLC'
+      },
+      route: {
+        type: 'string',
+        description: 'Network route',
+        example: '8.8.8.0/24'
+      },
+      domain: {
+        type: 'string',
+        description: 'Organization domain',
+        example: 'google.com'
+      },
+      type: {
+        type: 'string',
+        description: 'ASN type',
+        example: 'business'
       }
     }
   })
   asn?: {
     number?: number;
     organization?: string;
+    route?: string;
+    domain?: string;
+    type?: string;
   };
 
   @ApiProperty({
@@ -133,17 +151,17 @@ export class GeoIpResponseDto {
           description: 'Currency symbol',
           example: '$'
         },
-          name: {
-            type: 'string',
-            description: 'Currency name in English',
-            example: 'US Dollar'
-          },
-          name_native: {
-            type: 'string',
-            description: 'Currency name in native language',
-            example: 'US Dollar'
-          },
-          symbol_native: {
+        name: {
+          type: 'string',
+          description: 'Currency name in English',
+          example: 'US Dollar'
+        },
+        name_native: {
+          type: 'string',
+          description: 'Currency name in native language',
+          example: 'US Dollar'
+        },
+        symbol_native: {
           type: 'string',
           description: 'Native currency symbol',
           example: '$'
@@ -266,6 +284,40 @@ export class GeoIpResponseDto {
         type: 'boolean',
         description: 'Whether the IP is being used as a proxy',
         example: false
+      },
+      is_search_engine: {
+        type: 'boolean',
+        description: 'Whether the IP belongs to a search engine bot',
+        example: true
+      },
+      is_residential: {
+        type: 'boolean',
+        description: 'Whether the IP is from a residential ISP',
+        example: false
+      },
+      risk_score: {
+        type: 'number',
+        description: 'Risk score from 0-100',
+        example: 20
+      },
+      risk_level: {
+        type: 'string',
+        description: 'Risk level classification',
+        enum: ['low', 'medium', 'high'],
+        example: 'low'
+      },
+      connection_type: {
+        type: 'string',
+        description: 'Type of network connection',
+        example: 'Datacenter'
+      },
+      risk_factors: {
+        type: 'array',
+        description: 'List of detected risk factors',
+        items: {
+          type: 'string'
+        },
+        example: ['Datacenter IP', 'Search Engine Bot']
       }
     }
   })

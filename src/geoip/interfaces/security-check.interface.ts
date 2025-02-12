@@ -6,7 +6,7 @@ export interface SecurityCheck {
   is_search_engine: boolean;   // Can determine from ASN and known bot ranges
   is_residential: boolean;     // Can determine from ASN and IP ranges
   risk_score: number;          // 0-100 based on multiple factors
-  risk_level: 'low' | 'medium' | 'high';  // Risk classification
+  risk_level: 'very low' | 'low' | 'medium' | 'high' | 'very high';  // Risk classification
   connection_type: string;     // Residential, Datacenter, etc.
   risk_factors: string[];      // List of detected risk factors
 }

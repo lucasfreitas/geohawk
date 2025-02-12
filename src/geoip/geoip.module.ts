@@ -1,14 +1,25 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { GeoipController } from './geoip.controller';
 import { GeoipService } from './geoip.service';
 import { CountryDataService } from './services/country-data.service';
 import { SecurityCheckService } from './services/security-check.service';
-import { ConfigModule } from '@nestjs/config';
+import { IpReputationService } from './services/ip-reputation.service';
 
 @Module({
-  imports: [ConfigModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env'
+    })
+  ],
   controllers: [GeoipController],
-  providers: [GeoipService, CountryDataService, SecurityCheckService],
-  exports: [GeoipService],
+  providers: [
+    GeoipService,
+    CountryDataService,
+    SecurityCheckService,
+    IpReputationService
+  ],
+  exports: [GeoipService]
 })
 export class GeoipModule {}

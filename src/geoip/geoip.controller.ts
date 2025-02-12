@@ -1,58 +1,39 @@
-import { Controller, Get, Query, Headers, UnauthorizedException, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GeoipService } from './geoip.service';
-import { ConfigService } from '@nestjs/config';
-import { ApiOperation, ApiResponse, ApiTags, ApiHeader, ApiQuery } from '@nestjs/swagger';
-import { LookupIpDto, GeoIpResponseDto } from './dto/lookup-ip.dto';
+import { GeoIpResponseDto } from './dto/lookup-ip.dto';
+import { ApiKeyGuard } from './guards/api-key.guard';
 
 @ApiTags('GeoIP')
 @Controller('geoip')
+@UseGuards(ApiKeyGuard)
 export class GeoipController {
-  constructor(
-    private readonly geoipService: GeoipService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly geoipService: GeoipService) {}
 
-  @Get('lookup')
-  @HttpCode(HttpStatus.OK)
+  @Get('lookup/:ip')
   @ApiOperation({
-    summary: 'Lookup IP geolocation information',
-    description: 'Returns detailed geolocation information for a given IP address (IPv4 or IPv6) including city, country, location coordinates, timezone, and ASN details when available.'
+    summary: 'Lookup IP information',
+    description: 'Get detailed information about an IP address including geolocation, ASN details, and security analysis'
   })
-  @ApiHeader({
-    name: 'x-api-key',
-    description: 'API key for authentication',
-    required: true,
-    example: 'your-api-key-here'
-  })
-  @ApiQuery({
+  @ApiParam({
     name: 'ip',
-    description: 'IP address to lookup',
-    type: String,
-    required: true,
+    description: 'IP address to lookup (IPv4 or IPv6)',
     example: '8.8.8.8'
   })
   @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Successfully retrieved IP geolocation information',
+    status: 200,
+    description: 'Successful IP lookup',
     type: GeoIpResponseDto
   })
   @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid or missing API key'
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
+    status: 400,
     description: 'Invalid IP address format'
   })
-  async lookupIp(
-    @Query() query: LookupIpDto,
-    @Headers('x-api-key') apiKey: string,
-  ): Promise<GeoIpResponseDto> {
-    const validApiKey = this.configService.get<string>('API_KEY');
-    if (!apiKey || apiKey !== validApiKey) {
-      throw new UnauthorizedException('Invalid API key');
-    }
-
-    return this.geoipService.lookupIp(query.ip);
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid or missing API key'
+  })
+  async lookupIp(@Param('ip') ip: string): Promise<GeoIpResponseDto> {
+    return this.geoipService.lookupIp(ip);
   }
 }

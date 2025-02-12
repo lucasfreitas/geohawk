@@ -4,6 +4,7 @@ import { promises as fs } from 'fs';
 import { join } from 'path';
 import * as net from 'net';
 import * as maxmind from '@maxmind/geoip2-node';
+import * as maxmindReader from 'maxmind';
 import { CountryDataService } from './services/country-data.service';
 import { SecurityCheckService } from './services/security-check.service';
 import { GeoIpResponseDto } from './dto/lookup-ip.dto';
@@ -13,6 +14,7 @@ export class GeoipService implements OnModuleInit {
   private cityReader: any;
   private countryReader: any;
   private asnReader: any;
+  private ipInfoReader: any;
 
   constructor(
     private configService: ConfigService,
@@ -22,13 +24,16 @@ export class GeoipService implements OnModuleInit {
 
   async onModuleInit() {
     try {
-      const cityBuffer = await fs.readFile(join(process.cwd(), 'geoip-bases', 'GeoLite2-City.mmdb'));
-      const countryBuffer = await fs.readFile(join(process.cwd(), 'geoip-bases', 'GeoLite2-Country.mmdb'));
-      const asnBuffer = await fs.readFile(join(process.cwd(), 'geoip-bases', 'GeoLite2-ASN.mmdb'));
+      // Load MaxMind databases using environment variables
+      const cityBuffer = await fs.readFile(join(process.cwd(), this.configService.get('GEOIP_CITY_DB')));
+      const countryBuffer = await fs.readFile(join(process.cwd(), this.configService.get('GEOIP_COUNTRY_DB')));
+      const asnBuffer = await fs.readFile(join(process.cwd(), this.configService.get('GEOIP_ASN_DB')));
+      const ipInfoBuffer = await fs.readFile(join(process.cwd(), this.configService.get('GEOIP_IPINFO_DB')));
 
       this.cityReader = await maxmind.Reader.openBuffer(cityBuffer);
       this.countryReader = await maxmind.Reader.openBuffer(countryBuffer);
       this.asnReader = await maxmind.Reader.openBuffer(asnBuffer);
+      this.ipInfoReader = await maxmindReader.open(join(process.cwd(), this.configService.get('GEOIP_IPINFO_DB')));
     } catch (error) {
       console.error('Failed to load GeoIP databases:', error);
       throw error;
@@ -108,19 +113,30 @@ export class GeoipService implements OnModuleInit {
       }
 
       try {
-        // Get ASN data
+        // Get ASN data from both MaxMind and IPInfo
         const asnData = await this.asnReader.asn(ip);
-        if (asnData) {
+        const ipInfoData = this.ipInfoReader.get(ip);
+
+        if (asnData || ipInfoData) {
           response.asn = {
-            number: asnData.autonomousSystemNumber,
-            organization: asnData.autonomousSystemOrganization
+            number: asnData?.autonomousSystemNumber || ipInfoData?.autonomous_system_number,
+            organization: asnData?.autonomousSystemOrganization || ipInfoData?.autonomous_system_organization,
+            route: ipInfoData?.network,
+            domain: ipInfoData?.domain,
+            type: ipInfoData?.connection_type
           };
+
           if (!response.network) {
-            response.network = asnData.network;
+            response.network = asnData?.network || ipInfoData?.network;
           }
 
           // Add security information based on ASN and IP
-          response.security = this.securityCheckService.checkSecurity(ip, asnData.autonomousSystemNumber);
+          response.security = await this.securityCheckService.checkSecurity(
+            ip, 
+            response.asn.number,
+            response.asn.organization,
+            response.asn.type
+          );
         }
       } catch (error) {
         console.warn(`ASN lookup failed for IP ${ip}:`, error);
