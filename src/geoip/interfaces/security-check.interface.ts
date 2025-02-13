@@ -5,11 +5,67 @@ export interface SecurityCheck {
   is_proxy: boolean;          // Can determine from ASN and proxy lists
   is_search_engine: boolean;   // Can determine from ASN and known bot ranges
   is_residential: boolean;     // Can determine from ASN and IP ranges
+  is_ads_bot: boolean;        // Can determine if it's an ads platform bot
+  ads_company?: string;       // Name of the ads platform if is_ads_bot is true
   risk_score: number;          // 0-100 based on multiple factors
   risk_level: 'very low' | 'low' | 'medium' | 'high' | 'very high';  // Risk classification
   connection_type: string;     // Residential, Datacenter, etc.
   risk_factors: string[];      // List of detected risk factors
 }
+
+// Known advertising platform ASNs and organizations
+export const ADS_PLATFORMS = [
+  {
+    name: 'Facebook Ads',
+    asns: [32934, 54115, 63293], // Facebook ASNs
+    organizations: ['Facebook', 'Meta Platforms', 'Instagram']
+  },
+  {
+    name: 'Google Ads',
+    asns: [15169, 36040, 43515], // Google ASNs
+    organizations: ['Google Ads', 'DoubleClick', 'Google LLC']
+  },
+  {
+    name: 'TikTok Ads',
+    asns: [138699, 137718, 138742], // ByteDance/TikTok ASNs
+    organizations: ['ByteDance', 'TikTok']
+  },
+  {
+    name: 'Microsoft Ads',
+    asns: [8075, 8068, 8069], // Microsoft ASNs
+    organizations: ['Microsoft Advertising', 'Bing Ads', 'Microsoft Corporation']
+  },
+  {
+    name: 'Taboola',
+    asns: [14618, 16509], // AWS ASNs used by Taboola
+    organizations: ['Taboola']
+  },
+  {
+    name: 'Outbrain',
+    asns: [14618, 16509], // AWS ASNs used by Outbrain
+    organizations: ['Outbrain']
+  },
+  {
+    name: 'Twitter Ads',
+    asns: [13414, 35995, 54113], // Twitter ASNs
+    organizations: ['Twitter', 'X Corp']
+  },
+  {
+    name: 'LinkedIn Ads',
+    asns: [13443, 14413], // LinkedIn ASNs
+    organizations: ['LinkedIn']
+  },
+  {
+    name: 'Pinterest Ads',
+    asns: [54113, 14618], // Pinterest ASNs
+    organizations: ['Pinterest']
+  },
+  {
+    name: 'Snapchat Ads',
+    asns: [54115, 14618], // Snapchat ASNs
+    organizations: ['Snap Inc', 'Snapchat']
+  }
+];
 
 // Known search engine bot ASNs
 export const SEARCH_ENGINE_ASNS = new Set([

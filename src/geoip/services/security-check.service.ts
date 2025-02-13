@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SecurityCheck, RESIDENTIAL_ASNS } from '../interfaces/security-check.interface';
+import { SecurityCheck, RESIDENTIAL_ASNS, ADS_PLATFORMS } from '../interfaces/security-check.interface';
 import { IpReputationService } from './ip-reputation.service';
 
 @Injectable()
@@ -63,6 +63,7 @@ export class SecurityCheckService {
       is_proxy: false,
       is_search_engine: false,
       is_residential: true,
+      is_ads_bot: false,
       risk_score: 0,
       risk_level: 'low',
       connection_type: 'Residential', // Default to Residential since is_residential is true
@@ -75,9 +76,23 @@ export class SecurityCheckService {
       security.connection_type = 'Residential';
     }
 
-    // Check organization against known lists
-    if (organization) {
+    // Check for ads platform bots
+    if (organization && asnNumber) {
       const orgUpper = organization.toUpperCase();
+      
+      // Check against known ads platforms
+      for (const platform of ADS_PLATFORMS) {
+        if (
+          platform.asns.includes(asnNumber) ||
+          platform.organizations.some(org => orgUpper.includes(org.toUpperCase()))
+        ) {
+          security.is_ads_bot = true;
+          security.ads_company = platform.name;
+          security.risk_factors.push('Advertising Platform Bot');
+          security.connection_type = 'Ads Bot';
+          break;
+        }
+      }
 
       // Initial infrastructure check
       if (this.DATACENTER_PROVIDERS.some(provider => orgUpper.includes(provider.toUpperCase()))) {

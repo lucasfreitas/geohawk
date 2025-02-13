@@ -295,6 +295,16 @@ export class GeoIpResponseDto {
         description: 'Whether the IP is from a residential ISP',
         example: false
       },
+      is_ads_bot: {
+        type: 'boolean',
+        description: 'Whether the IP belongs to an advertising platform bot',
+        example: true
+      },
+      ads_company: {
+        type: 'string',
+        description: 'Name of the advertising platform if is_ads_bot is true',
+        example: 'Facebook Ads'
+      },
       risk_score: {
         type: 'number',
         description: 'Risk score from 0-100',
@@ -303,13 +313,13 @@ export class GeoIpResponseDto {
       risk_level: {
         type: 'string',
         description: 'Risk level classification',
-        enum: ['low', 'medium', 'high'],
+        enum: ['very low', 'low', 'medium', 'high', 'very high'],
         example: 'low'
       },
       connection_type: {
         type: 'string',
         description: 'Type of network connection',
-        example: 'Datacenter'
+        example: 'Ads Bot'
       },
       risk_factors: {
         type: 'array',
@@ -317,7 +327,7 @@ export class GeoIpResponseDto {
         items: {
           type: 'string'
         },
-        example: ['Datacenter IP', 'Search Engine Bot']
+        example: ['Advertising Platform Bot']
       }
     }
   })
